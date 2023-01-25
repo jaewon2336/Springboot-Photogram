@@ -19,6 +19,13 @@
 	</properties>
 	<dependencies>
 
+		<!-- validation -->
+		<dependency>
+   			<groupId>org.springframework.boot</groupId>
+   			<artifactId>spring-boot-starter-validation</artifactId>
+    		<version>3.0.1</version>
+		</dependency>
+
 		<!-- qlrm -->
 		<dependency>
 			<groupId>org.qlrm</groupId>

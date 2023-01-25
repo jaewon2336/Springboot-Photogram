@@ -1,10 +1,18 @@
 package com.cos.photogramstart.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cos.photogramstart.domain.user.User;
 import com.cos.photogramstart.service.AuthService;
@@ -37,17 +45,26 @@ public class AuthController {
 	}
 
 	@PostMapping("/auth/signup")
-	public String signup(SignupDto signupDto) { // key=value(x-www-form-urlencoded)
-		log.info("디버그 : " + signupDto.toString());
+	public @ResponseBody String signup(@Valid SignupDto signupDto, BindingResult bindingResult) { // key=value(x-www-form-urlencoded)
 
-		// User <- signupDto
-		User user = signupDto.toEntity();
-		log.info("디버그 : " + user.toString());
+		if (bindingResult.hasErrors()) {
+			Map<String, String> errorMap = new HashMap<>();
 
-		User userEntity = authService.회원가입(user);
-		log.info("디버그 : " + userEntity);
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
 
-		return "auth/signin";
+			return "오류남";
+		} else {
+			// User <- signupDto
+			User user = signupDto.toEntity();
+
+			User userEntity = authService.회원가입(user);
+			log.info("디버그 : " + userEntity);
+
+			return "auth/signin";
+		}
+
 	}
 
 }
